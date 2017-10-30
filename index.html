@@ -147,69 +147,69 @@
             </div>
         </div>
         <script>
-            $(".height-fix").css("height", screen.height*0.7);
-            
-            $("#newCabecera").click(function(){
-                if(!validarParametros($("#newClaveCabecera"), $("#newValorCabecera")))
+            $(".height-fix").css("height", screen.height * 0.7);
+
+            $("#newCabecera").click(function () {
+                if (!validarParametros($("#newClaveCabecera"), $("#newValorCabecera")))
                     return;
                 agregarFila($("#tableCabeceras"), $("#newClaveCabecera").val(), $("#newValorCabecera").val());
                 resetCabeceras();
             });
-            
-            $("#resetCabecera").click(function(){
+
+            $("#resetCabecera").click(function () {
                 resetCabeceras();
             });
-            
-            function resetCabeceras(){
+
+            function resetCabeceras() {
                 $("#newClaveCabecera").val("");
                 $("#newValorCabecera").val("");
             }
-            
-            $("#newCabeceraCuerpo").click(function(){
-                if(!validarParametros($("#newClaveCuerpo"), $("#newValorCuerpo")))
+
+            $("#newCabeceraCuerpo").click(function () {
+                if (!validarParametros($("#newClaveCuerpo"), $("#newValorCuerpo")))
                     return;
                 agregarFila($("#tableCuerpo"), $("#newClaveCuerpo").val(), $("#newValorCuerpo").val());
                 resetCabecerasCuerpo();
             });
-            
-            $("#resetCabeceraCuerpo").click(function(){
+
+            $("#resetCabeceraCuerpo").click(function () {
                 resetCabecerasCuerpo();
             });
-            
-            function resetCabecerasCuerpo(){
+
+            function resetCabecerasCuerpo() {
                 $("#newClaveCuerpo").val("");
                 $("#newValorCuerpo").val("");
             }
-            
-            $("#tableCabeceras, #tableCuerpo").on("click", ".btn-danger", function(){
+
+            $("#tableCabeceras, #tableCuerpo").on("click", ".btn-danger", function () {
                 eliminarFila($(this));
             });
-            
-            $("#tableCabeceras, #tableCuerpo").on("focus", ".form-control", function(){
+
+            $("#tableCabeceras, #tableCuerpo").on("focus", ".form-control", function () {
                 $(this).removeAttr("readonly");
                 $(this).removeClass("readonly");
             });
-            
-            $("#tableCabeceras, #tableCuerpo").on("blur", ".form-control", function(){
+
+            $("#tableCabeceras, #tableCuerpo").on("blur", ".form-control", function () {
                 $(this).attr("readonly", "readonly");
                 $(this).addClass("readonly");
             });
-            
-            $("#btnEnviar").click(function(){
+
+            $("#btnEnviar").click(function () {
                 solicitarHTTP();
             });
-            
-            $("#selectMetodo").change(function(){
-                if($("#selectMetodo option:selected").text() === "GET")
+
+            $("#selectMetodo").change(function () {
+                if ($("#selectMetodo option:selected").text() === "GET")
                     $("#contentCuerpo").fadeOut();
                 else
                     $("#contentCuerpo").fadeIn();
             });
 
-            function agregarFila(tabla, clave, valor){
+            function agregarFila(tabla, clave, valor) {
                 var fila = $("<tr></tr>");
-                fila.append("<td><input type='text' class='input-sm form-control col-sm-12 readonly' name='key' readonly value='"+clave+"'></td>");
-                fila.append("<td><input type='text' class='input-sm form-control col-sm-12 readonly' name='key' readonly value='"+valor+"'></td>");
+                fila.append("<td><input type='text' class='input-sm form-control col-sm-12 readonly' name='key' readonly value='" + clave + "'></td>");
+                fila.append("<td><input type='text' class='input-sm form-control col-sm-12 readonly' name='key' readonly value='" + valor + "'></td>");
                 var td = $("<td></td>");
                 var div = $("<div class='col-sm-12 text-center'></div>");
                 div.append("<button class='btn-xs btn-danger'><span class='glyphicon glyphicon-remove'></span></button>");
@@ -217,56 +217,55 @@
                 fila.append(td);
                 tabla.append(fila);
             }
-            
-            function eliminarFila(btn){
+
+            function eliminarFila(btn) {
                 btn.parent().parent().parent().remove();
             }
-            
+
             function setEstadoRespuesta(bool, status, statusText)
             {
-                if(bool)
+                if (bool)
                 {
                     $("#panelResponse").removeClass("panel-danger");
                     $("#panelResponse").addClass("panel-success");
-                }
-                else
+                } else
                 {
                     $("#panelResponse").removeClass("panel-success");
                     $("#panelResponse").addClass("panel-danger");
                 }
                 $("#statusHTTP").text("Estado: " + status + " - " + statusText.toUpperCase());
             }
-            
+
             function getContenido(tabla)
             {
                 var parametros = "";
-                tabla.each(function(){
+                tabla.each(function () {
                     parametros = parametros + $(this).find("td").eq(0).children().val() + "=" + $(this).find("td").eq(1).children().val() + "&";
                 });
-                if(parametros !== "")
+                if (parametros !== "")
                     parametros = parametros.slice(0, -1);
                 return parametros;
             }
-            
-            function solicitarHTTP(){
-                if(!validarDominio())
+
+            function solicitarHTTP() {
+                if (!validarDominio())
                     return;
                 validarDominio();
                 var url = generarURL();
                 var metodo = $("#selectMetodo option:selected").text();
-                var data = (metodo === "GET")?"":getContenido($("#tableCuerpo tr"));
+                var data = (metodo === "GET") ? "" : getContenido($("#tableCuerpo tr"));
                 $.ajax({
-                    url:url,
-                    type:metodo,
-                    data:data,
-                    success:function(data, status, xhr){
+                    url: url,
+                    type: metodo,
+                    data: data,
+                    success: function (data, status, xhr) {
                         $("#responseHeaders").html(writeHeaders(xhr.getAllResponseHeaders()));
                         $("#responseCuerpo").html(writeCuerpo(xhr.responseText));
                         setEstadoRespuesta(true, xhr.status, xhr.statusText);
                         $("#iframe").attr("srcdoc", xhr.responseText);
                         SyntaxHighlighter.highlight();
                     },
-                    error:function(xhr, status, error){
+                    error: function (xhr, status, error) {
                         $("#responseHeaders").html(writeHeaders(xhr.getAllResponseHeaders()));
                         $("#responseCuerpo").html(writeCuerpo(xhr.responseText));
                         setEstadoRespuesta(false, xhr.status, xhr.statusText);
@@ -276,24 +275,24 @@
                 });
                 $("#filaRespuesta").slideDown();
             }
-            
+
             function generarURL()
             {
                 var dom = $("#dom").val();
                 var arch = $("#arch").val();
                 var url = dom;
-                if(arch !== "")
+                if (arch !== "")
                     url = url + "\\" + arch;
                 var parametros = getContenido($("#tableCabeceras tr"));
-                if(parametros !== "")
+                if (parametros !== "")
                     url = url + "?" + parametros;
                 return url;
             }
-            
+
             function validarDominio()
             {
                 var input = $("#input-dom");
-                if($("#dom").val() === "")
+                if ($("#dom").val() === "")
                 {
                     input.addClass("has-error");
                     $("#filaRespuesta").hide();
@@ -302,14 +301,14 @@
                 input.removeClass("has-error");
                 return true;
             }
-            
+
             function validarParametros(clave, valor)
             {
-                if(clave.val() === "" || valor.val() === "")
+                if (clave.val() === "" || valor.val() === "")
                     return false;
                 return true;
             }
-            
+
             function formatHeaders(text)
             {
                 var headers = {};
@@ -317,28 +316,28 @@
                     if (line.length > 0)
                     {
                         var delimiter = '\u003a\u0020',
-                        header = line.split(delimiter);
+                                header = line.split(delimiter);
                         headers[header.shift().toLowerCase()] = header.join(delimiter);
                     }
                 });
                 return headers;
             }
-            
+
             function writeHeaders(text)
             {
                 var html = "";
                 var headers = formatHeaders(text);
-                for(var i in headers)
+                for (var i in headers)
                     html += "<p><strong>" + i + " -> </strong>" + headers[i] + "</p>\n";
                 return html;
             }
-            
+
             function writeCuerpo(text)
             {
-                if(text === undefined)
+                if (text === undefined)
                     return "";
                 var html = $("<pre class='brush: html'></pre>");
-                text = text.replace(/</g,"&lt;");
+                text = text.replace(/</g, "&lt;");
                 html.html(text);
                 return html;
             }

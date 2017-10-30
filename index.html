@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Generador de peticiones</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="icono.png">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/propio.css">
+        <link rel="stylesheet" href="css/shCore.css">
+        <link rel="stylesheet" href="css/shThemeDefault.css">
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/shCore.js"></script>
+        <script src="js/shBrushXml.js"></script>
+    </head> 
+    <body>
+        <div class="jumbotron text-center">
+            <h2>Generador de peticiones HTTP</h2>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="input-group" id="input-dom">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+                        <input type="url" class="form-control" id="dom" placeholder="Dominio" name="dir">
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-file"></i></span>
+                        <input type="text" class="form-control" id ="arch" placeholder="Archivo" name="arch">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <select class="btn btn-primary col-sm-12" id="selectMetodo">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Cabeceras</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-striped table-hover table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="col-sm-5">Clave</th>
+                                        <th class="col-sm-5">Valor</th>
+                                        <th class="col-sm-2"></th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <td><input type="text" class="form-control col-sm-12" placeholder="Nueva clave" id="newClaveCabecera"></td>
+                                        <td><input type="text" class="form-control col-sm-12" placeholder="Valor" id="newValorCabecera"></td>
+                                        <td>
+                                            <div class="col-sm-12 text-center">
+                                                <button class="btn btn-success" id="newCabecera"><span class="glyphicon glyphicon-plus"></span></button>
+                                                <button class="btn btn-default" id="resetCabecera"><span class="glyphicon glyphicon-refresh"></span></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                                <tbody id="tableCabeceras">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" hidden id="contentCuerpo">
+                <div class="col-sm-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Cuerpo</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-striped table-hover table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="col-sm-5">Clave</th>
+                                        <th class="col-sm-5">Valor</th>
+                                        <th class="col-sm-2"></th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <td><input type="text" class="form-control col-sm-12" placeholder="Nueva clave" id="newClaveCuerpo"></td>
+                                        <td><input type="text" class="form-control col-sm-12" placeholder="Valor" id="newValorCuerpo"></td>
+                                        <td>
+                                            <div class="col-sm-12 text-center">
+                                                <button class="btn btn-success" id="newCabeceraCuerpo"><span class="glyphicon glyphicon-plus"></span></button>
+                                                <button class="btn btn-default" id="resetCabeceraCuerpo"><span class="glyphicon glyphicon-refresh"></span></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                                <tbody id="tableCuerpo">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <button class="btn-lg btn-success" id="btnEnviar">Enviar</button>
+                </div>
+            </div>
+            <br>
+            <div class="row" hidden id="filaRespuesta">
+                <div class="col-sm-12">
+                    <div class="panel" id="panelResponse">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <h3 class="panel-title col-sm-6 text-left">Respuesta</h3>
+                                <h3 class="panel-title col-sm-6 text-right" id="statusHTTP">.</h3>
+                            </div>
+                        </div>
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tabCabeceras">Cabeceras</a></li>
+                            <li><a data-toggle="tab" href="#tabCuerpo">Cuerpo</a></li>
+                            <li><a data-toggle="tab" href="#tabVistaPrevia">Vista previa</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tabCabeceras" class="tab-pane fade in active height-fix">
+                                <div class="response" id="responseHeaders">
+                                </div>
+                            </div>
+                            <div id="tabCuerpo" class="tab-pane height-fix">
+                                <div class="response" id="responseCuerpo">
+                                </div>
+                            </div>
+                            <div id="tabVistaPrevia" class="tab-pane height-fix">
+                                <iframe class="iframe-cuerpo" id="iframe">       
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(".height-fix").css("height", screen.height*0.7);
+            
+            $("#newCabecera").click(function(){
+                if(!validarParametros($("#newClaveCabecera"), $("#newValorCabecera")))
+                    return;
+                agregarFila($("#tableCabeceras"), $("#newClaveCabecera").val(), $("#newValorCabecera").val());
+                resetCabeceras();
+            });
+            
+            $("#resetCabecera").click(function(){
+                resetCabeceras();
+            });
+            
+            function resetCabeceras(){
+                $("#newClaveCabecera").val("");
+                $("#newValorCabecera").val("");
+            }
+            
+            $("#newCabeceraCuerpo").click(function(){
+                if(!validarParametros($("#newClaveCuerpo"), $("#newValorCuerpo")))
+                    return;
+                agregarFila($("#tableCuerpo"), $("#newClaveCuerpo").val(), $("#newValorCuerpo").val());
+                resetCabecerasCuerpo();
+            });
+            
+            $("#resetCabeceraCuerpo").click(function(){
+                resetCabecerasCuerpo();
+            });
+            
+            function resetCabecerasCuerpo(){
+                $("#newClaveCuerpo").val("");
+                $("#newValorCuerpo").val("");
+            }
+            
+            $("#tableCabeceras, #tableCuerpo").on("click", ".btn-danger", function(){
+                eliminarFila($(this));
+            });
+            
+            $("#tableCabeceras, #tableCuerpo").on("focus", ".form-control", function(){
+                $(this).removeAttr("readonly");
+                $(this).removeClass("readonly");
+            });
+            
+            $("#tableCabeceras, #tableCuerpo").on("blur", ".form-control", function(){
+                $(this).attr("readonly", "readonly");
+                $(this).addClass("readonly");
+            });
+            
+            $("#btnEnviar").click(function(){
+                solicitarHTTP();
+            });
+            
+            $("#selectMetodo").change(function(){
+                if($("#selectMetodo option:selected").text() === "GET")
+                    $("#contentCuerpo").fadeOut();
+                else
+                    $("#contentCuerpo").fadeIn();
+            });
+
+            function agregarFila(tabla, clave, valor){
+                var fila = $("<tr></tr>");
+                fila.append("<td><input type='text' class='input-sm form-control col-sm-12 readonly' name='key' readonly value='"+clave+"'></td>");
+                fila.append("<td><input type='text' class='input-sm form-control col-sm-12 readonly' name='key' readonly value='"+valor+"'></td>");
+                var td = $("<td></td>");
+                var div = $("<div class='col-sm-12 text-center'></div>");
+                div.append("<button class='btn-xs btn-danger'><span class='glyphicon glyphicon-remove'></span></button>");
+                td.append(div);
+                fila.append(td);
+                tabla.append(fila);
+            }
+            
+            function eliminarFila(btn){
+                btn.parent().parent().parent().remove();
+            }
+            
+            function setEstadoRespuesta(bool, status, statusText)
+            {
+                if(bool)
+                {
+                    $("#panelResponse").removeClass("panel-danger");
+                    $("#panelResponse").addClass("panel-success");
+                }
+                else
+                {
+                    $("#panelResponse").removeClass("panel-success");
+                    $("#panelResponse").addClass("panel-danger");
+                }
+                $("#statusHTTP").text("Estado: " + status + " - " + statusText.toUpperCase());
+            }
+            
+            function getContenido(tabla)
+            {
+                var parametros = "";
+                tabla.each(function(){
+                    parametros = parametros + $(this).find("td").eq(0).children().val() + "=" + $(this).find("td").eq(1).children().val() + "&";
+                });
+                if(parametros !== "")
+                    parametros = parametros.slice(0, -1);
+                return parametros;
+            }
+            
+            function solicitarHTTP(){
+                if(!validarDominio())
+                    return;
+                validarDominio();
+                var url = generarURL();
+                var metodo = $("#selectMetodo option:selected").text();
+                var data = (metodo === "GET")?"":getContenido($("#tableCuerpo tr"));
+                $.ajax({
+                    url:url,
+                    type:metodo,
+                    data:data,
+                    success:function(data, status, xhr){
+                        $("#responseHeaders").html(writeHeaders(xhr.getAllResponseHeaders()));
+                        $("#responseCuerpo").html(writeCuerpo(xhr.responseText));
+                        setEstadoRespuesta(true, xhr.status, xhr.statusText);
+                        $("#iframe").attr("srcdoc", xhr.responseText);
+                        SyntaxHighlighter.highlight();
+                    },
+                    error:function(xhr, status, error){
+                        $("#responseHeaders").html(writeHeaders(xhr.getAllResponseHeaders()));
+                        $("#responseCuerpo").html(writeCuerpo(xhr.responseText));
+                        setEstadoRespuesta(false, xhr.status, xhr.statusText);
+                        $("#iframe").attr("srcdoc", xhr.responseText);
+                        SyntaxHighlighter.highlight();
+                    }
+                });
+                $("#filaRespuesta").slideDown();
+            }
+            
+            function generarURL()
+            {
+                var dom = $("#dom").val();
+                var arch = $("#arch").val();
+                var url = dom;
+                if(arch !== "")
+                    url = url + "\\" + arch;
+                var parametros = getContenido($("#tableCabeceras tr"));
+                if(parametros !== "")
+                    url = url + "?" + parametros;
+                return url;
+            }
+            
+            function validarDominio()
+            {
+                var input = $("#input-dom");
+                if($("#dom").val() === "")
+                {
+                    input.addClass("has-error");
+                    $("#filaRespuesta").hide();
+                    return false;
+                }
+                input.removeClass("has-error");
+                return true;
+            }
+            
+            function validarParametros(clave, valor)
+            {
+                if(clave.val() === "" || valor.val() === "")
+                    return false;
+                return true;
+            }
+            
+            function formatHeaders(text)
+            {
+                var headers = {};
+                text.split('\u000d\u000a').forEach((line) => {
+                    if (line.length > 0)
+                    {
+                        var delimiter = '\u003a\u0020',
+                        header = line.split(delimiter);
+                        headers[header.shift().toLowerCase()] = header.join(delimiter);
+                    }
+                });
+                return headers;
+            }
+            
+            function writeHeaders(text)
+            {
+                var html = "";
+                var headers = formatHeaders(text);
+                for(var i in headers)
+                    html += "<p><strong>" + i + " -> </strong>" + headers[i] + "</p>\n";
+                return html;
+            }
+            
+            function writeCuerpo(text)
+            {
+                if(text === undefined)
+                    return "";
+                var html = $("<pre class='brush: html'></pre>");
+                text = text.replace(/</g,"&lt;");
+                html.html(text);
+                return html;
+            }
+        </script>
+    </body>
+</html>

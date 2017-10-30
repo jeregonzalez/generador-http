@@ -1,0 +1,57 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 07-sep-2017, 16:50:50
+    Author     : Jeremias Gonzalez
+*/
+.no-border{
+    border-right:0pt;
+    border-top:0pt;
+    border-bottom:0pt;
+    border-left:0pt;
+}
+
+input[readonly].readonly{
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.jumbotron { 
+    background-color:#337ab7;
+    color: white;
+}
+
+body{
+    background-color: whitesmoke;
+}
+
+.height-fix{
+    
+}
+
+.response{
+    width:100%;
+    height:100%;
+    overflow:auto;
+    padding:15px;
+}
+
+.iframe-cuerpo{
+    width:100%;
+    height:100%;
+}
+
+.error{
+    color: #a94442;
+    border-color: #a94442;
+}
+
+.error:focus {
+  border-color: #843534;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+}
